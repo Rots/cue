@@ -1,0 +1,19 @@
+! exec cue vet null.yaml schema.cue
+cmp stderr null-stderr
+
+! exec cue vet nonull.yaml schema.cue
+cmp stderr nonull-stderr
+-- schema.cue --
+a:b:c: string
+-- null.yaml --
+a: null
+-- nonull.yaml --
+a:
+-- null-stderr --
+a: conflicting values null and {b:{c:string}} (mismatched types null and struct):
+    ./null.yaml:1:5
+    ./schema.cue:1:3
+-- nonull-stderr --
+a: conflicting values null and {b:{c:string}} (mismatched types null and struct):
+    ./nonull.yaml:1:2
+    ./schema.cue:1:3
